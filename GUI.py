@@ -1,6 +1,14 @@
 import tkinter as tk
 from tkinter import messagebox
-
+import sqlite3
+import mysql.connector
+conn = mysql.connector.connect(
+    host="127.0.0.1",
+    user="root",
+    password="",
+    database="flight_tracking"
+)
+cursor = conn.cursor()
 def add_airplane():
     messagebox.showinfo("Airplane Added", "The airplane has been added to the system!")
 
@@ -40,8 +48,6 @@ for label, value in fields.items():
 # Buttons
 btn_frame = tk.Frame(root)
 btn_frame.pack(pady=20)
-
-tk.Button(btn_frame, text="Add Airplane", command=add_airplane, width=15).pack(side=tk.LEFT, padx=10)
-tk.Button(btn_frame, text="Cancel", command=cancel_add, width=15).pack(side=tk.LEFT, padx=10)
+root.protocol("WM_DELETE_WINDOW", lambda: (conn.close(), root.destroy()))
 
 root.mainloop()
