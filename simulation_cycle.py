@@ -7,7 +7,7 @@ def run_simulation_cycle():
         conn = mysql.connector.connect(
             host="127.0.0.1",
             user="root",
-            password="Linkshane12!",
+            password="",
             database="flight_tracking"
         )
         cursor = conn.cursor()
