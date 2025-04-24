@@ -3,9 +3,9 @@ from tkinter import messagebox
 import mysql.connector
 
 conn = mysql.connector.connect(
-    host="127.0.0.1",
+    host="localhost",
     user="root",
-    password="!",
+    password="Phase4sucksballs",
     database="flight_tracking"
 )
 cursor = conn.cursor()
@@ -108,6 +108,10 @@ def show_flight_crew():
 def cancel():
     root.destroy()
 
+def launch_main_menu():
+    root.destroy()
+    import main_menu
+
 root = tk.Tk()
 root.title("Assign Pilot")
 root.geometry("450x350")
@@ -136,6 +140,7 @@ for label, var in fields.items():
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Assign", command=assign_pilot, width=10).pack(side=tk.LEFT, padx=5)
 tk.Button(btn_frame, text="Available Pilots", command=show_available_pilots, width=15).pack(side=tk.LEFT, padx=5)
+tk.Button(btn_frame, text="Return to Main Menu", command=launch_main_menu, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="Flight Crew", command=show_flight_crew, width=10).pack(side=tk.LEFT, padx=5)
 btn_frame.pack(pady=20)
 

@@ -1,14 +1,15 @@
 import tkinter as tk
 from tkinter import messagebox
-import sqlite3
 import mysql.connector
+
 conn = mysql.connector.connect(
-    host="127.0.0.1",
+    host="localhost",
     user="root",
-    password="!",
+    password="Phase4sucksballs",
     database="flight_tracking"
 )
 cursor = conn.cursor()
+
 try:
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
@@ -18,6 +19,7 @@ try:
 except mysql.connector.Error as err:
     print("❌ Error:", err)
     messagebox.showerror("Database Error", f"MySQL Error: {err}")
+
 def add_airplane():
     try:
         values = (
@@ -31,16 +33,14 @@ def add_airplane():
             fields["model"].get(),
             bool(int(fields["neo"].get()))
         )
-
         cursor.callproc("add_airplane", values)
         conn.commit()
         messagebox.showinfo("Success", "Airplane added (if input was valid).")
         print("Inserting values:", values)
-        cursor.callproc("add_airplane", values)
+        
         # Try printing the outcome
         for result in cursor.stored_results():
             print("Stored procedure result:", result.fetchall())
-
     except mysql.connector.Error as err:
         messagebox.showerror("Database Error", f"Failed to add airplane:\n{err}")
     except ValueError:
@@ -48,16 +48,19 @@ def add_airplane():
 
 def show_airplanes():
     try:
-        cursor.execute("SELECT tail_num FROM airplane")
+        cursor.execute("SELECT airline_id, tail_num, airplane_type FROM airplane")
         rows = cursor.fetchall()
-        result = "\n".join([row[0] for row in rows]) or "No airplanes found."
-
+        result = "\n".join([f"{row[0]} - {row[1]} ({row[2]})" for row in rows]) or "No airplanes found."
         result_label.config(text=result)
     except mysql.connector.Error as err:
         messagebox.showerror("Error", f"Could not fetch airplanes: {err}")
 
 def cancel_add():
     root.destroy()
+
+def launch_main_menu():
+    root.destroy()
+    import main_menu
 
 root = tk.Tk()
 root.title("Add Airplane")
@@ -76,7 +79,6 @@ fields = {
     "neo": tk.StringVar(),
 }
 
-
 # Heading
 tk.Label(root, text="Add Airplane", font=("Helvetica", 16, "bold")).pack(pady=10)
 
@@ -91,14 +93,15 @@ for label, var in fields.items():
     entry.pack(side=tk.LEFT)
     row.pack(pady=4)
 
-
 # Buttons
-
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Add Airplane", command=add_airplane, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="Show Airplanes", command=show_airplanes, width=15).pack(side=tk.LEFT, padx=10)
+tk.Button(btn_frame, text="Return to Main Menu", command=launch_main_menu, width=15).pack(side=tk.LEFT, padx=10)
 btn_frame.pack(pady=20)
+
 root.protocol("WM_DELETE_WINDOW", lambda: (conn.close(), root.destroy()))
+
 result_label = tk.Label(root, text="", justify="left", font=("Courier", 10), anchor='w')
 result_label.pack(pady=10)
 

@@ -3,9 +3,9 @@ from tkinter import messagebox
 import mysql.connector
 
 conn = mysql.connector.connect(
-    host="127.0.0.1",
+    host="localhost",
     user="root",
-    password="!",
+    password="Phase4sucksballs",
     database="flight_tracking"
 )
 cursor = conn.cursor()
@@ -72,6 +72,10 @@ def show_people():
 def cancel_add():
     root.destroy()
 
+def launch_main_menu():
+    root.destroy()
+    import main_menu
+
 root = tk.Tk()
 root.title("Add Person")
 root.geometry("350x400")
@@ -114,6 +118,7 @@ tk.Label(root, text=help_text, font=("Helvetica", 9), justify=tk.LEFT).pack()
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Add Person", command=add_person, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="Show People", command=show_people, width=15).pack(side=tk.LEFT, padx=10)
+tk.Button(btn_frame, text="Return to Main Menu", command=launch_main_menu, width=15).pack(side=tk.LEFT, padx=10)
 btn_frame.pack(pady=20)
 
 root.protocol("WM_DELETE_WINDOW", lambda: (conn.close(), root.destroy()))

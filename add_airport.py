@@ -2,75 +2,101 @@ import tkinter as tk
 from tkinter import messagebox
 import mysql.connector
 
-def run_add_airport():
-    def add_airport():
-        try:
-            # Gather and validate inputs
-            values = (
-                fields["airportID"].get().strip().upper(),
-                fields["airport_name"].get().strip(),
-                fields["city"].get().strip(),
-                fields["state"].get().strip(),
-                fields["country"].get().strip().upper(),
-                fields["locationID"].get().strip()
-            )
+conn = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Phase4sucksballs",
+    database="flight_tracking"
+)
+cursor = conn.cursor()
 
-            if len(values[0]) != 3 or len(values[4]) != 3:
-                raise ValueError("AirportID and Country must be 3 characters.")
+try:
+    cursor.execute("SHOW TABLES;")
+    tables = cursor.fetchall()
+    print("✅ Connected to MySQL! Tables found:")
+    for table in tables:
+        print(" -", table[0])
+except mysql.connector.Error as err:
+    print("❌ Error:", err)
+    messagebox.showerror("Database Error", f"MySQL Error: {err}")
 
-            cursor.callproc("add_airport", values)
-            conn.commit()
-            messagebox.showinfo("Success", " Airport added successfully (if input was valid).")
-        except mysql.connector.Error as err:
-            messagebox.showerror("Database Error", f" MySQL error:\n{err}")
-        except ValueError as ve:
-            messagebox.showerror("Input Error", str(ve))
+def add_airport():
+    try:
+        values = (
+            fields["airportID"].get(),
+            fields["airport_name"].get(),
+            fields["city"].get(),
+            fields["state"].get(),
+            fields["country"].get(),
+            fields["locationID"].get()
+        )
+        cursor.callproc("add_airport", values)
+        conn.commit()
+        messagebox.showinfo("Success", "Airport added (if input was valid).")
+        print("Inserting values:", values)
+        
+        # Try printing the outcome
+        for result in cursor.stored_results():
+            print("Stored procedure result:", result.fetchall())
+    except mysql.connector.Error as err:
+        messagebox.showerror("Database Error", f"Failed to add airport:\n{err}")
+    except ValueError:
+        messagebox.showerror("Input Error", "Make sure all fields have valid values.")
 
-    def cancel_add():
-        conn.close()
-        root.destroy()
+def show_airports():
+    try:
+        cursor.execute("SELECT airportID, airport_name, city, state, country FROM airport")
+        rows = cursor.fetchall()
+        result = "\n".join([f"{row[0]} - {row[1]} ({row[2]}, {row[3]}, {row[4]})" for row in rows]) or "No airports found."
+        result_label.config(text=result)
+    except mysql.connector.Error as err:
+        messagebox.showerror("Error", f"Could not fetch airports: {err}")
 
-    # MySQL connection
-    conn = mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="!",
-        database="flight_tracking"
-    )
-    cursor = conn.cursor()
+def cancel_add():
+    root.destroy()
 
-    root = tk.Tk()
-    root.title("Add Airport")
-    root.geometry("400x450")
+def launch_main_menu():
+    root.destroy()
+    import main_menu
 
-    tk.Label(root, text="Add Airport", font=("Helvetica", 16, "bold")).pack(pady=10)
+root = tk.Tk()
+root.title("Add Airport")
+root.geometry("350x350")
+root.resizable(True, True)
 
-    frame = tk.Frame(root)
-    frame.pack(pady=10)
+fields = {
+    "airportID": tk.StringVar(),
+    "airport_name": tk.StringVar(),
+    "city": tk.StringVar(),
+    "state": tk.StringVar(),
+    "country": tk.StringVar(),
+    "locationID": tk.StringVar()
+}
 
-    # Field setup
-    fields = {
-        "airportID": tk.StringVar(),
-        "airport_name": tk.StringVar(),
-        "city": tk.StringVar(),
-        "state": tk.StringVar(),
-        "country": tk.StringVar(),
-        "locationID": tk.StringVar()
-    }
+# Heading
+tk.Label(root, text="Add Airport", font=("Helvetica", 16, "bold")).pack(pady=10)
 
-    for label, var in fields.items():
-        row = tk.Frame(frame)
-        tk.Label(row, text=f"{label}:", width=15, anchor='w', font=("Helvetica", 11)).pack(side=tk.LEFT)
-        tk.Entry(row, textvariable=var, width=30).pack(side=tk.LEFT)
-        row.pack(pady=5)
+# Display each field and its value
+frame = tk.Frame(root)
+frame.pack(pady=10)
 
-    # Buttons
-    btn_frame = tk.Frame(root)
-    tk.Button(btn_frame, text="Add Airport", command=add_airport, width=15).pack(side=tk.LEFT, padx=10)
-    tk.Button(btn_frame, text="Cancel", command=cancel_add, width=15).pack(side=tk.LEFT, padx=10)
-    btn_frame.pack(pady=20)
+for label, var in fields.items():
+    row = tk.Frame(frame)
+    tk.Label(row, text=f"{label}:", width=15, anchor='w', font=("Helvetica", 11)).pack(side=tk.LEFT)
+    entry = tk.Entry(row, textvariable=var, width=25)
+    entry.pack(side=tk.LEFT)
+    row.pack(pady=4)
 
-    root.mainloop()
+# Buttons
+btn_frame = tk.Frame(root)
+tk.Button(btn_frame, text="Add Airport", command=add_airport, width=15).pack(side=tk.LEFT, padx=10)
+tk.Button(btn_frame, text="Show Airports", command=show_airports, width=15).pack(side=tk.LEFT, padx=10)
+tk.Button(btn_frame, text="Return to Main Menu", command=launch_main_menu, width=15).pack(side=tk.LEFT, padx=10)
+btn_frame.pack(pady=20)
 
-# Run when imported
-run_add_airport()
+root.protocol("WM_DELETE_WINDOW", lambda: (conn.close(), root.destroy()))
+
+result_label = tk.Label(root, text="", justify="left", font=("Courier", 10), anchor='w')
+result_label.pack(pady=10)
+
+root.mainloop()

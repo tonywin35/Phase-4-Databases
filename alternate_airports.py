@@ -3,9 +3,9 @@ from tkinter import ttk, messagebox
 import mysql.connector
 
 conn = mysql.connector.connect(
-    host="127.0.0.1",
+    host="localhost",
     user="root",
-    password="!",
+    password="Phase4sucksballs",
     database="flight_tracking"
 )
 cursor = conn.cursor()
@@ -121,6 +121,10 @@ def exit_program():
     conn.close()
     root.destroy()
 
+def launch_main_menu():
+    root.destroy()
+    import main_menu
+
 root = tk.Tk()
 root.title("Alternate Airports")
 root.geometry("1000x600")
@@ -164,6 +168,7 @@ details_label.pack(fill=tk.BOTH, expand=True)
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Refresh", command=refresh, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="City Details", command=show_city_details, width=15).pack(side=tk.LEFT, padx=10)
+tk.Button(btn_frame, text="Return to Main Menu", command=launch_main_menu, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="Exit", command=exit_program, width=15).pack(side=tk.LEFT, padx=10)
 btn_frame.pack(pady=20)
 

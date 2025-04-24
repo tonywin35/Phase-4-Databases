@@ -8,9 +8,9 @@ import sys
 # Database connection
 try:
     conn = mysql.connector.connect(
-        host="127.0.0.1",
+        host="localhost",
         user="root",
-        password="",
+        password="Phase4sucksballs",
         database="flight_tracking"
     )
     cursor = conn.cursor()
@@ -41,6 +41,10 @@ def exit_program():
     if 'conn' in globals() and conn.is_connected():
         conn.close()
     root.destroy()
+
+def launch_main_menu():
+    root.destroy()
+    import main_menu
 
 # Create main window
 root = tk.Tk()
