@@ -96,7 +96,6 @@ for label, var in fields.items():
 # Buttons
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Add Airplane", command=add_airplane, width=15).pack(side=tk.LEFT, padx=10)
-tk.Button(btn_frame, text="Show Airplanes", command=show_airplanes, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="Return to Main Menu", command=launch_main_menu, width=15).pack(side=tk.LEFT, padx=10)
 btn_frame.pack(pady=20)
 
