@@ -13,16 +13,16 @@ cursor = conn.cursor()
 try:
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
-    print("✅ Connected to MySQL! Tables found:")
+    print("Tables found:")
     for table in tables:
         print(" -", table[0])
 except mysql.connector.Error as err:
-    print("❌ Error:", err)
+    print("Error:", err)
     messagebox.showerror("Database Error", f"MySQL Error: {err}")
 
 def add_person():
     try:
-        # Handle null values for optional parameters
+
         tax_id = fields["taxID"].get() or None
         experience = fields["experience"].get()
         experience = int(experience) if experience else None
@@ -34,7 +34,7 @@ def add_person():
         values = (
             fields["personID"].get(),
             fields["first_name"].get(),
-            fields["last_name"].get() or None,  # Last name can be null
+            fields["last_name"].get() or None,
             fields["locationID"].get(),
             tax_id,
             experience,
@@ -45,8 +45,7 @@ def add_person():
         conn.commit()
         messagebox.showinfo("Success", "Person added (if input was valid).")
         print("Inserting values:", values)
-        
-        # Try printing the outcome
+
         for result in cursor.stored_results():
             print("Stored procedure result:", result.fetchall())
     except mysql.connector.Error as err:
@@ -92,10 +91,8 @@ fields = {
     "funds": tk.StringVar()
 }
 
-# Heading
 tk.Label(root, text="Add Person", font=("Helvetica", 16, "bold")).pack(pady=10)
 
-# Display each field and its value
 frame = tk.Frame(root)
 frame.pack(pady=10)
 
@@ -106,7 +103,6 @@ for label, var in fields.items():
     entry.pack(side=tk.LEFT)
     row.pack(pady=4)
 
-# Add help text
 help_text = """
 For Pilot: Fill in taxID and experience
 For Passenger: Fill in miles and funds
@@ -114,7 +110,6 @@ Last name is optional.
 """
 tk.Label(root, text=help_text, font=("Helvetica", 9), justify=tk.LEFT).pack()
 
-# Buttons
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Add Person", command=add_person, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="Show People", command=show_people, width=15).pack(side=tk.LEFT, padx=10)

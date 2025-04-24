@@ -5,7 +5,7 @@ import mysql.connector
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="Phase4sucksballs",
+    password="Linkshane12!",
     database="flight_tracking"
 )
 cursor = conn.cursor()
@@ -13,11 +13,11 @@ cursor = conn.cursor()
 try:
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
-    print("✅ Connected to MySQL! Tables found:")
+    print("Connected to MySQL! Tables found:")
     for table in tables:
         print(" -", table[0])
 except mysql.connector.Error as err:
-    print("❌ Error:", err)
+    print("Error:", err)
     messagebox.showerror("Database Error", f"MySQL Error: {err}")
 
 def show_people_on_ground():
@@ -26,17 +26,14 @@ def show_people_on_ground():
         columns = [desc[0] for desc in cursor.description]
         data = cursor.fetchall()
         
-        # Clear existing data
         for item in tree.get_children():
             tree.delete(item)
             
-        # Insert column names
         tree["columns"] = columns
         for col in columns:
             tree.heading(col, text=col)
             tree.column(col, width=100)
         
-        # Insert data
         for row in data:
             tree.insert("", "end", values=row)
             
@@ -70,7 +67,6 @@ def show_airport_details():
             messagebox.showinfo("Info", f"No details found for airport {airport_id}.")
             return
             
-        # Get all people at this airport
         cursor.execute("""
             SELECT p.personID, p.first_name, p.last_name,
                   CASE 
@@ -89,8 +85,7 @@ def show_airport_details():
         """, (airport_id,))
         
         people = cursor.fetchall()
-        
-        # Get departing flights
+
         cursor.execute("""
             SELECT f.flightID, f.support_airline, f.support_tail, f.next_time
             FROM flight f
@@ -102,7 +97,6 @@ def show_airport_details():
         
         flights = cursor.fetchall()
         
-        # Prepare details text
         details_text = f"Airport: {airport_id} - {airport[0]}\n"
         details_text += f"Location: {airport[1]}, {airport[2]}, {airport[3]}\n\n"
         
@@ -110,7 +104,6 @@ def show_airport_details():
             details_text += "People at this airport:\n"
             details_text += "-----------------------\n"
             
-            # Group by role
             pilots = [p for p in people if p[3] == 'Pilot']
             passengers = [p for p in people if p[3] == 'Passenger']
             
@@ -149,51 +142,40 @@ root.title("People on the Ground")
 root.geometry("1000x600")
 root.resizable(True, True)
 
-# Heading
 tk.Label(root, text="People on the Ground", font=("Helvetica", 16, "bold")).pack(pady=10)
 
-# Split into left and right panels
 main_frame = tk.Frame(root)
 main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-# Create left frame for table
 left_frame = tk.Frame(main_frame)
 left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-# Create treeview for data display
 tree = ttk.Treeview(left_frame)
 tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-# Add vertical scrollbar
 v_scrollbar = ttk.Scrollbar(left_frame, orient="vertical", command=tree.yview)
 v_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 tree.configure(yscrollcommand=v_scrollbar.set)
 
-# Add horizontal scrollbar
 h_frame = tk.Frame(left_frame)
 h_frame.pack(fill=tk.X, expand=False, side=tk.BOTTOM)
 h_scrollbar = ttk.Scrollbar(h_frame, orient="horizontal", command=tree.xview)
 h_scrollbar.pack(fill=tk.X)
 tree.configure(xscrollcommand=h_scrollbar.set)
 
-# Create right frame for details
 right_frame = tk.Frame(main_frame)
 right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(10, 0))
 
 details_label = tk.Label(right_frame, text="Select an airport to see details", justify="left", font=("Courier", 10), anchor='nw')
 details_label.pack(fill=tk.BOTH, expand=True)
 
-# Buttons
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Refresh", command=refresh, width=15).pack(side=tk.LEFT, padx=10)
-tk.Button(btn_frame, text="Airport Details", command=show_airport_details, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="Exit", command=exit_program, width=15).pack(side=tk.LEFT, padx=10)
 btn_frame.pack(pady=20)
 
-# Load initial data
 show_people_on_ground()
 
-# Bind selection event
 tree.bind('<<TreeviewSelect>>', lambda e: show_airport_details())
 
 root.protocol("WM_DELETE_WINDOW", exit_program)

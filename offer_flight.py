@@ -13,11 +13,11 @@ cursor = conn.cursor()
 try:
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
-    print("✅ Connected to MySQL! Tables found:")
+    print("Tables found:")
     for table in tables:
         print(" -", table[0])
 except mysql.connector.Error as err:
-    print("❌ Error:", err)
+    print("Error:", err)
     messagebox.showerror("Database Error", f"MySQL Error: {err}")
 
 def offer_flight():
@@ -35,8 +35,7 @@ def offer_flight():
         conn.commit()
         messagebox.showinfo("Success", "Flight offered (if input was valid).")
         print("Inserting values:", values)
-        
-        # Try printing the outcome
+
         for result in cursor.stored_results():
             print("Stored procedure result:", result.fetchall())
     except mysql.connector.Error as err:
@@ -93,13 +92,10 @@ fields = {
     "cost": tk.StringVar()
 }
 
-# Set default for progress
 fields["progress"].set("0")
 
-# Heading
 tk.Label(root, text="Offer Flight", font=("Helvetica", 16, "bold")).pack(pady=10)
 
-# Display each field and its value
 frame = tk.Frame(root)
 frame.pack(pady=10)
 
@@ -110,7 +106,6 @@ for label, var in fields.items():
     entry.pack(side=tk.LEFT)
     row.pack(pady=4)
 
-# Add help text
 help_text = """
 Next time format: HH:MM:SS (24-hour format)
 Progress: Starting leg sequence (usually 0)
@@ -118,7 +113,6 @@ Cost: Flight fare in currency units
 """
 tk.Label(root, text=help_text, font=("Helvetica", 9), justify=tk.LEFT).pack()
 
-# Buttons
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Add Flight", command=offer_flight, width=15).pack(side=tk.LEFT, padx=5)
 tk.Button(btn_frame, text="Show Flights", command=show_flights, width=15).pack(side=tk.LEFT, padx=5)

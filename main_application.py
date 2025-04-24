@@ -5,7 +5,6 @@ import os
 import mysql.connector
 import sys
 
-# Database connection
 try:
     conn = mysql.connector.connect(
         host="localhost",
@@ -17,12 +16,12 @@ try:
     
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
-    print("✅ Connected to MySQL! Tables found:")
+    print("Tables found:")
     for table in tables:
         print(" -", table[0])
     db_connected = True
 except mysql.connector.Error as err:
-    print("❌ Error:", err)
+    print("Error:", err)
     db_connected = False
 
 def launch_module(module_name):
@@ -46,13 +45,11 @@ def launch_main_menu():
     root.destroy()
     import main_menu
 
-# Create main window
 root = tk.Tk()
 root.title("Simple Airline Management System (SAMS)")
 root.geometry("800x600")
 root.resizable(True, True)
 
-# Header
 header_frame = tk.Frame(root, bg="#3a7ebf", padx=10, pady=10)
 header_frame.pack(fill=tk.X)
 
@@ -64,7 +61,6 @@ tk.Label(
     fg="white"
 ).pack()
 
-# Status indicator
 status_frame = tk.Frame(root, bg="#f0f0f0", padx=10, pady=5)
 status_frame.pack(fill=tk.X)
 
@@ -76,11 +72,9 @@ status_label = tk.Label(
 )
 status_label.pack(side=tk.RIGHT)
 
-# Main content
 content_frame = tk.Frame(root, padx=20, pady=20)
 content_frame.pack(fill=tk.BOTH, expand=True)
 
-# Create sections based on SQL file procedures and views
 sections = {
     "Entity Management": [
         ("Add Airplane", "updated_add_airplane"),
@@ -113,7 +107,7 @@ sections = {
 
 row = 0
 for section_title, buttons in sections.items():
-    # Section title
+
     tk.Label(
         content_frame,
         text=section_title,
@@ -121,8 +115,7 @@ for section_title, buttons in sections.items():
         anchor="w"
     ).grid(row=row, column=0, columnspan=3, sticky="w", pady=(20, 10))
     row += 1
-    
-    # Section buttons
+
     col = 0
     for button_text, module_name in buttons:
         tk.Button(
@@ -134,14 +127,13 @@ for section_title, buttons in sections.items():
         ).grid(row=row, column=col, padx=10, pady=5)
         
         col += 1
-        if col >= 3:  # Create a new row after 3 buttons
+        if col >= 3:
             col = 0
             row += 1
     
-    if col > 0:  # Move to next row if there are buttons in the current row
+    if col > 0:
         row += 1
 
-# Footer
 footer_frame = tk.Frame(root, bg="#f0f0f0", padx=10, pady=10)
 footer_frame.pack(fill=tk.X, side=tk.BOTTOM)
 
@@ -152,7 +144,6 @@ tk.Button(
     command=exit_program
 ).pack(side=tk.RIGHT)
 
-# When window is closed
 root.protocol("WM_DELETE_WINDOW", exit_program)
 
 if __name__ == "__main__":

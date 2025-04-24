@@ -13,11 +13,11 @@ cursor = conn.cursor()
 try:
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
-    print("✅ Connected to MySQL! Tables found:")
+    print("Tables found:")
     for table in tables:
         print(" -", table[0])
 except mysql.connector.Error as err:
-    print("❌ Error:", err)
+    print("Error:", err)
     messagebox.showerror("Database Error", f"MySQL Error: {err}")
 
 def add_airplane():
@@ -37,8 +37,7 @@ def add_airplane():
         conn.commit()
         messagebox.showinfo("Success", "Airplane added (if input was valid).")
         print("Inserting values:", values)
-        
-        # Try printing the outcome
+
         for result in cursor.stored_results():
             print("Stored procedure result:", result.fetchall())
     except mysql.connector.Error as err:
@@ -79,10 +78,8 @@ fields = {
     "neo": tk.StringVar(),
 }
 
-# Heading
 tk.Label(root, text="Add Airplane", font=("Helvetica", 16, "bold")).pack(pady=10)
 
-# Display each field and its value
 frame = tk.Frame(root)
 frame.pack(pady=10)
 
@@ -93,7 +90,6 @@ for label, var in fields.items():
     entry.pack(side=tk.LEFT)
     row.pack(pady=4)
 
-# Buttons
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Add Airplane", command=add_airplane, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="Return to Main Menu", command=launch_main_menu, width=15).pack(side=tk.LEFT, padx=10)

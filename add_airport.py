@@ -13,11 +13,11 @@ cursor = conn.cursor()
 try:
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
-    print("✅ Connected to MySQL! Tables found:")
+    print("Tables found:")
     for table in tables:
         print(" -", table[0])
 except mysql.connector.Error as err:
-    print("❌ Error:", err)
+    print("Error:", err)
     messagebox.showerror("Database Error", f"MySQL Error: {err}")
 
 def add_airport():
@@ -34,8 +34,7 @@ def add_airport():
         conn.commit()
         messagebox.showinfo("Success", "Airport added (if input was valid).")
         print("Inserting values:", values)
-        
-        # Try printing the outcome
+
         for result in cursor.stored_results():
             print("Stored procedure result:", result.fetchall())
     except mysql.connector.Error as err:
@@ -73,10 +72,8 @@ fields = {
     "locationID": tk.StringVar()
 }
 
-# Heading
 tk.Label(root, text="Add Airport", font=("Helvetica", 16, "bold")).pack(pady=10)
 
-# Display each field and its value
 frame = tk.Frame(root)
 frame.pack(pady=10)
 
@@ -87,7 +84,6 @@ for label, var in fields.items():
     entry.pack(side=tk.LEFT)
     row.pack(pady=4)
 
-# Buttons
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Add Airport", command=add_airport, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="Show Airports", command=show_airports, width=15).pack(side=tk.LEFT, padx=10)

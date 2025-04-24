@@ -13,11 +13,11 @@ cursor = conn.cursor()
 try:
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
-    print("✅ Connected to MySQL! Tables found:")
+    print("Tables found:")
     for table in tables:
         print(" -", table[0])
 except mysql.connector.Error as err:
-    print("❌ Error:", err)
+    print("Error:", err)
     messagebox.showerror("Database Error", f"MySQL Error: {err}")
 
 def passengers_board():
@@ -29,8 +29,7 @@ def passengers_board():
         conn.commit()
         messagebox.showinfo("Success", "Passengers boarded (if input was valid).")
         print("Processing with values:", values)
-        
-        # Try printing the outcome
+
         for result in cursor.stored_results():
             print("Stored procedure result:", result.fetchall())
     except mysql.connector.Error as err:
@@ -59,7 +58,7 @@ def show_potential_passengers():
         return
         
     try:
-        # Find the current location (airport) of the flight
+
         cursor.execute("""
             SELECT a.airportID, a.airport_name
             FROM flight f
@@ -74,8 +73,7 @@ def show_potential_passengers():
             return
             
         airport_id, airport_name = airport_row
-        
-        # Find passengers at this airport
+
         cursor.execute("""
             SELECT p.personID, p.first_name, p.last_name, pas.funds
             FROM person p
@@ -85,8 +83,7 @@ def show_potential_passengers():
         """, (airport_id,))
         
         rows = cursor.fetchall()
-        
-        # Get flight cost
+
         cursor.execute("SELECT cost FROM flight WHERE flightID = %s", (flight_id,))
         cost_row = cursor.fetchone()
         flight_cost = cost_row[0] if cost_row else 0
@@ -114,10 +111,8 @@ fields = {
     "flightID": tk.StringVar()
 }
 
-# Heading
 tk.Label(root, text="Passengers Board", font=("Helvetica", 16, "bold")).pack(pady=10)
 
-# Display each field and its value
 frame = tk.Frame(root)
 frame.pack(pady=10)
 
@@ -128,7 +123,6 @@ for label, var in fields.items():
     entry.pack(side=tk.LEFT)
     row.pack(pady=4)
 
-# Buttons
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Board", command=passengers_board, width=10).pack(side=tk.LEFT, padx=5)
 tk.Button(btn_frame, text="Available Flights", command=show_available_flights, width=15).pack(side=tk.LEFT, padx=5)

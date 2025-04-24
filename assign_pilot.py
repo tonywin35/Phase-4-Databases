@@ -13,11 +13,11 @@ cursor = conn.cursor()
 try:
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
-    print("✅ Connected to MySQL! Tables found:")
+    print("Tables found:")
     for table in tables:
         print(" -", table[0])
 except mysql.connector.Error as err:
-    print("❌ Error:", err)
+    print("Error:", err)
     messagebox.showerror("Database Error", f"MySQL Error: {err}")
 
 def assign_pilot():
@@ -30,8 +30,7 @@ def assign_pilot():
         conn.commit()
         messagebox.showinfo("Success", "Pilot assigned (if input was valid).")
         print("Processing with values:", values)
-        
-        # Try printing the outcome
+
         for result in cursor.stored_results():
             print("Stored procedure result:", result.fetchall())
     except mysql.connector.Error as err:
@@ -79,8 +78,7 @@ def show_flight_crew():
         """, (flight_id,))
         
         rows = cursor.fetchall()
-        
-        # Get flight details
+
         cursor.execute("""
             SELECT f.support_airline, f.support_tail, a.airplane_type
             FROM flight f
@@ -122,10 +120,8 @@ fields = {
     "personID": tk.StringVar()
 }
 
-# Heading
 tk.Label(root, text="Assign Pilot", font=("Helvetica", 16, "bold")).pack(pady=10)
 
-# Display each field and its value
 frame = tk.Frame(root)
 frame.pack(pady=10)
 
@@ -136,7 +132,6 @@ for label, var in fields.items():
     entry.pack(side=tk.LEFT)
     row.pack(pady=4)
 
-# Buttons
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Assign", command=assign_pilot, width=10).pack(side=tk.LEFT, padx=5)
 tk.Button(btn_frame, text="Available Pilots", command=show_available_pilots, width=15).pack(side=tk.LEFT, padx=5)

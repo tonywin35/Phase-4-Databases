@@ -13,11 +13,11 @@ cursor = conn.cursor()
 try:
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
-    print("✅ Connected to MySQL! Tables found:")
+    print("Tables found:")
     for table in tables:
         print(" -", table[0])
 except mysql.connector.Error as err:
-    print("❌ Error:", err)
+    print("Error:", err)
     messagebox.showerror("Database Error", f"MySQL Error: {err}")
 
 def flight_landing():
@@ -29,8 +29,7 @@ def flight_landing():
         conn.commit()
         messagebox.showinfo("Success", "Flight landed (if input was valid).")
         print("Processing with values:", values)
-        
-        # Try printing the outcome
+
         for result in cursor.stored_results():
             print("Stored procedure result:", result.fetchall())
     except mysql.connector.Error as err:
@@ -72,8 +71,7 @@ def show_flight_status():
         row = cursor.fetchone()
         if row:
             result = f"Flight: {row[0]}\nAirline: {row[1]}\nTail: {row[2]}\nStatus: {row[3]}\nProgress: {row[4]} of {row[7]} legs\nNext time: {row[5]}\nRoute: {row[6]}"
-            
-            # Also get passenger count
+
             cursor.execute("""
                 SELECT COUNT(p.personID)
                 FROM person p
@@ -107,10 +105,8 @@ fields = {
     "flightID": tk.StringVar()
 }
 
-# Heading
 tk.Label(root, text="Flight Landing", font=("Helvetica", 16, "bold")).pack(pady=10)
 
-# Display each field and its value
 frame = tk.Frame(root)
 frame.pack(pady=10)
 
@@ -121,7 +117,6 @@ for label, var in fields.items():
     entry.pack(side=tk.LEFT)
     row.pack(pady=4)
 
-# Buttons
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Land Flight", command=flight_landing, width=12).pack(side=tk.LEFT, padx=5)
 tk.Button(btn_frame, text="Show In-Air", command=show_flights_in_air, width=12).pack(side=tk.LEFT, padx=5)
