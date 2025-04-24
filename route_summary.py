@@ -145,7 +145,6 @@ details_label.pack(fill=tk.BOTH, expand=True)
 
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Refresh", command=refresh, width=15).pack(side=tk.LEFT, padx=10)
-tk.Button(btn_frame, text="Route Details", command=show_route_details, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="Return to Main Menu", command=launch_main_menu, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="Exit", command=exit_program, width=15).pack(side=tk.LEFT, padx=10)
 btn_frame.pack(pady=20)
