@@ -5,7 +5,7 @@ import mysql.connector
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="Phase4sucksballs",
+    password="cs4400_2025",
     database="flight_tracking"
 )
 cursor = conn.cursor()
@@ -119,7 +119,6 @@ tk.Button(btn_frame, text="Show Flights", command=show_flights, width=15).pack(s
 btn_frame.pack(pady=10)
 
 btn_frame2 = tk.Frame(root)
-tk.Button(btn_frame2, text="Show Airplanes", command=show_airplanes, width=15).pack(side=tk.LEFT, padx=5)
 tk.Button(btn_frame2, text="Show Routes", command=show_routes, width=15).pack(side=tk.LEFT, padx=5)
 tk.Button(btn_frame, text="Return to Main Menu", command=launch_main_menu, width=15).pack(side=tk.LEFT, padx=10)
 btn_frame2.pack(pady=10)

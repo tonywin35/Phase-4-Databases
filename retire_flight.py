@@ -13,11 +13,11 @@ cursor = conn.cursor()
 try:
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
-    print("Tables found:")
+    print("✅ Connected to MySQL! Tables found:")
     for table in tables:
         print(" -", table[0])
 except mysql.connector.Error as err:
-    print("Error:", err)
+    print("❌ Error:", err)
     messagebox.showerror("Database Error", f"MySQL Error: {err}")
 
 def retire_flight():
@@ -29,7 +29,8 @@ def retire_flight():
         conn.commit()
         messagebox.showinfo("Success", "Flight retired (if input was valid).")
         print("Processing with values:", values)
-
+        
+        # Try printing the outcome
         for result in cursor.stored_results():
             print("Stored procedure result:", result.fetchall())
     except mysql.connector.Error as err:
@@ -86,6 +87,7 @@ def show_flight_details():
             result_label.config(text=f"Flight {flight_id} not found.")
             return
             
+        # Count people on board
         cursor.execute("""
             SELECT COUNT(p.personID) as total,
                    COUNT(pi.personID) as pilots,
@@ -99,6 +101,7 @@ def show_flight_details():
         
         count_row = cursor.fetchone()
         
+        # Count legs in route
         cursor.execute("""
             SELECT COUNT(*) FROM route_path WHERE routeID = %s
         """, (flight_row[3],))
@@ -153,8 +156,10 @@ fields = {
     "flightID": tk.StringVar()
 }
 
+# Heading
 tk.Label(root, text="Retire Flight", font=("Helvetica", 16, "bold")).pack(pady=10)
 
+# Display each field and its value
 frame = tk.Frame(root)
 frame.pack(pady=10)
 
@@ -165,6 +170,7 @@ for label, var in fields.items():
     entry.pack(side=tk.LEFT)
     row.pack(pady=4)
 
+# Add help text
 help_text = """
 A flight can be retired when:
 1. It is on the ground
@@ -173,6 +179,7 @@ A flight can be retired when:
 """
 tk.Label(root, text=help_text, font=("Helvetica", 9), justify=tk.LEFT).pack()
 
+# Buttons
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Retire", command=retire_flight, width=10).pack(side=tk.LEFT, padx=5)
 tk.Button(btn_frame, text="Show Completed", command=show_completed_flights, width=15).pack(side=tk.LEFT, padx=5)

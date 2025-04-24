@@ -13,11 +13,11 @@ cursor = conn.cursor()
 try:
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
-    print("Tables found:")
+    print("✅ Connected to MySQL! Tables found:")
     for table in tables:
         print(" -", table[0])
 except mysql.connector.Error as err:
-    print("Error:", err)
+    print("❌ Error:", err)
     messagebox.showerror("Database Error", f"MySQL Error: {err}")
 
 def grant_revoke_license():
@@ -30,7 +30,8 @@ def grant_revoke_license():
         conn.commit()
         messagebox.showinfo("Success", "License granted or revoked (if input was valid).")
         print("Processing with values:", values)
-
+        
+        # Try printing the outcome
         for result in cursor.stored_results():
             print("Stored procedure result:", result.fetchall())
     except mysql.connector.Error as err:
@@ -82,8 +83,10 @@ fields = {
     "license": tk.StringVar()
 }
 
+# Heading
 tk.Label(root, text="Grant or Revoke Pilot License", font=("Helvetica", 16, "bold")).pack(pady=10)
 
+# Display each field and its value
 frame = tk.Frame(root)
 frame.pack(pady=10)
 
@@ -94,9 +97,11 @@ for label, var in fields.items():
     entry.pack(side=tk.LEFT)
     row.pack(pady=4)
 
+# Add help text
 help_text = "Common licenses: A320, A380, B737, B747, B777, B787"
 tk.Label(root, text=help_text, font=("Helvetica", 9), justify=tk.LEFT).pack()
 
+# Buttons
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Add/Revoke", command=grant_revoke_license, width=10).pack(side=tk.LEFT, padx=5)
 tk.Button(btn_frame, text="Show Pilots", command=show_pilots, width=10).pack(side=tk.LEFT, padx=5)

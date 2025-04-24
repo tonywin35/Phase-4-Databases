@@ -5,7 +5,7 @@ import mysql.connector
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="Phase4sucksballs",
+    password="cs4400_2025",
     database="flight_tracking"
 )
 cursor = conn.cursor()
@@ -97,7 +97,6 @@ for label, var in fields.items():
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Takeoff", command=flight_takeoff, width=15).pack(side=tk.LEFT, padx=5)
 tk.Button(btn_frame, text="Show Grounded", command=show_flights_on_ground, width=15).pack(side=tk.LEFT, padx=5)
-tk.Button(btn_frame, text="Show Pilots", command=show_pilot_info, width=15).pack(side=tk.LEFT, padx=5)
 tk.Button(btn_frame, text="Return to Main Menu", command=launch_main_menu, width=15).pack(side=tk.LEFT, padx=10)
 btn_frame.pack(pady=20)
 

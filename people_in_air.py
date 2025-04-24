@@ -5,7 +5,7 @@ import mysql.connector
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="Linkshane12!",
+    password="Phase4sucksballs",
     database="flight_tracking"
 )
 cursor = conn.cursor()
@@ -13,11 +13,11 @@ cursor = conn.cursor()
 try:
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
-    print("Connected to MySQL! Tables found:")
+    print("✅ Connected to MySQL! Tables found:")
     for table in tables:
         print(" -", table[0])
 except mysql.connector.Error as err:
-    print("Error:", err)
+    print("❌ Error:", err)
     messagebox.showerror("Database Error", f"MySQL Error: {err}")
 
 def show_people_in_air():
@@ -26,14 +26,17 @@ def show_people_in_air():
         columns = [desc[0] for desc in cursor.description]
         data = cursor.fetchall()
         
+        # Clear existing data
         for item in tree.get_children():
             tree.delete(item)
             
+        # Insert column names
         tree["columns"] = columns
         for col in columns:
             tree.heading(col, text=col)
             tree.column(col, width=100)
-
+        
+        # Insert data
         for row in data:
             tree.insert("", "end", values=row)
             
@@ -54,9 +57,11 @@ def show_flight_details():
     selected_item = tree.selection()[0]
     selected_values = tree.item(selected_item)['values']
     
+    # Get departure and arrival airports
     dep_airport = selected_values[0]
     arr_airport = selected_values[1]
     
+    # Get flight IDs as comma-separated list
     flight_list = selected_values[4] if len(selected_values) > 4 else ""
     flights = flight_list.split(',') if flight_list else []
     
@@ -64,6 +69,7 @@ def show_flight_details():
         messagebox.showinfo("Info", "No flight information available.")
         return
     
+    # Get details for the first flight
     try:
         flight_details_text = "Flight Details:\n\n"
         
@@ -84,6 +90,7 @@ def show_flight_details():
                 flight_details_text += f"Status: {flight[4]}, Progress: {flight[5]}\n"
                 flight_details_text += f"Next Event: {flight[6]}\n\n"
                 
+                # Get passenger details
                 cursor.execute("""
                     SELECT p.personID, p.first_name, p.last_name,
                           CASE WHEN pi.personID IS NOT NULL THEN 'Pilot' ELSE 'Passenger' END as role
@@ -118,35 +125,44 @@ root.title("People in the Air")
 root.geometry("1000x600")
 root.resizable(True, True)
 
+# Heading
 tk.Label(root, text="People in the Air", font=("Helvetica", 16, "bold")).pack(pady=10)
 
+# Create top frame for table
 top_frame = tk.Frame(root)
 top_frame.pack(pady=10, fill=tk.BOTH, expand=True)
 
+# Create treeview for data display
 tree = ttk.Treeview(top_frame)
 tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
+# Add vertical scrollbar
 v_scrollbar = ttk.Scrollbar(top_frame, orient="vertical", command=tree.yview)
 v_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 tree.configure(yscrollcommand=v_scrollbar.set)
 
+# Add horizontal scrollbar
 h_frame = tk.Frame(root)
 h_frame.pack(fill=tk.X, expand=False)
 h_scrollbar = ttk.Scrollbar(h_frame, orient="horizontal", command=tree.xview)
 h_scrollbar.pack(fill=tk.X)
 tree.configure(xscrollcommand=h_scrollbar.set)
 
+# Create bottom frame for details
 bottom_frame = tk.Frame(root)
 bottom_frame.pack(pady=10, fill=tk.X)
 
 details_label = tk.Label(bottom_frame, text="", justify="left", font=("Courier", 10), anchor='w')
 details_label.pack(pady=10, fill=tk.X)
 
+# Buttons
 btn_frame = tk.Frame(root)
 tk.Button(btn_frame, text="Refresh", command=refresh, width=15).pack(side=tk.LEFT, padx=10)
+tk.Button(btn_frame, text="Flight Details", command=show_flight_details, width=15).pack(side=tk.LEFT, padx=10)
 tk.Button(btn_frame, text="Exit", command=exit_program, width=15).pack(side=tk.LEFT, padx=10)
 btn_frame.pack(pady=20)
 
+# Load initial data
 show_people_in_air()
 
 root.protocol("WM_DELETE_WINDOW", exit_program)
