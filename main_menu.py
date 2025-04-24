@@ -59,6 +59,30 @@ def launch_sim_cycle():
     root.destroy()
     import simulation_cycle
 
+def launch_flights_in_air():
+    root.destroy()
+    import flights_in_air
+
+def launch_flights_on_ground():
+    root.destroy()
+    import flights_on_ground
+
+def launch_people_in_air():
+    root.destroy()
+    import people_in_air
+
+def launch_people_on_ground():
+    root.destroy()
+    import people_on_ground
+
+def launch_route_summary():
+    root.destroy()
+    import route_summary
+
+def launch_alternate_airport():
+    root.destroy()
+    import alternate_airports
+
 button_config = {"width": 30, "font": ("Helvetica", 11)}
 
 tk.Button(root, text="Add Airplane", command=launch_add_airplane, **button_config).pack(pady=3)
@@ -74,6 +98,12 @@ tk.Button(root, text="Assign Pilot", command=launch_assign_pilot, **button_confi
 tk.Button(root, text="Recycle Crew", command=launch_recycle_crew, **button_config).pack(pady=3)
 tk.Button(root, text="Retire Flight", command=launch_retire_flight, **button_config).pack(pady=3)
 tk.Button(root, text="Simulation Cycle", command=launch_sim_cycle, **button_config).pack(pady=3)
+tk.Button(root, text="Flights in Air", command=launch_flights_in_air, **button_config).pack(pady=3)
+tk.Button(root, text="Flights on Ground", command=launch_flights_on_ground, **button_config).pack(pady=3)
+tk.Button(root, text="People in Air", command=launch_people_in_air, **button_config).pack(pady=3)
+tk.Button(root, text="People on Ground", command=launch_people_on_ground, **button_config).pack(pady=3)
+tk.Button(root, text="Route Summary", command=launch_route_summary, **button_config).pack(pady=3)
+tk.Button(root, text="Alternate Airports", command=launch_alternate_airport, **button_config).pack(pady=3)
 
 tk.Button(root, text="Quit", width=30, command=root.destroy, font=("Helvetica", 11, "bold")).pack(pady=15)
 
